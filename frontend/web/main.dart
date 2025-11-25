@@ -121,27 +121,24 @@ Future<void> _showCertificateView(String assertionUrl) async {
     final assertionRes = await window.fetch(assertionUrl.toJS).toDart;
     if (!assertionRes.ok)
       throw Exception('Could not load assertion: ${assertionRes.statusText}');
-    final assertion =
-        jsonDecode((await assertionRes.text().toDart).toDart)
-            as Map<String, dynamic>;
+    final assertion = jsonDecode((await assertionRes.text().toDart).toDart)
+        as Map<String, dynamic>;
 
     // 2. Fetch BadgeClass
     final badgeUrl = assertion['badge'] as String;
     final badgeRes = await window.fetch(badgeUrl.toJS).toDart;
     if (!badgeRes.ok)
       throw Exception('Could not load badge: ${badgeRes.statusText}');
-    final badge =
-        jsonDecode((await badgeRes.text().toDart).toDart)
-            as Map<String, dynamic>;
+    final badge = jsonDecode((await badgeRes.text().toDart).toDart)
+        as Map<String, dynamic>;
 
     // 3. Fetch Issuer
     final issuerUrl = badge['issuer'] as String;
     final issuerRes = await window.fetch(issuerUrl.toJS).toDart;
     if (!issuerRes.ok)
       throw Exception('Could not load issuer: ${issuerRes.statusText}');
-    final issuer =
-        jsonDecode((await issuerRes.text().toDart).toDart)
-            as Map<String, dynamic>;
+    final issuer = jsonDecode((await issuerRes.text().toDart).toDart)
+        as Map<String, dynamic>;
 
     // 4. Populate HTML
     document.title = 'Certificate: ${badge['name']}';
@@ -166,31 +163,28 @@ Future<void> _showCertificateView(String assertionUrl) async {
         'Issued on ${issuedOn.toLocal()}';
 
     // Verification link & copy functionality
-    final assertionUrlInput =
-        querySelector('.assertion-url-input') as HTMLInputElement;
+    final certificateViewElement = querySelector('#certificate-view');
+    final assertionUrlInput = certificateViewElement
+        .querySelector('.assertion-url-input') as HTMLInputElement;
     assertionUrlInput.value = assertionUrl;
 
-    final copyUrlButton =
-        querySelector('.copy-url-button') as HTMLButtonElement;
+    final copyUrlButton = certificateViewElement
+        .querySelector('.copy-url-button') as HTMLButtonElement;
     final originalButtonContent = copyUrlButton.innerHTML;
 
     final void Function(Event) copyClickListener = (Event event) {
-      window.navigator.clipboard
-          .writeText(assertionUrl)
-          .toDart
-          .then((_) {
-            copyUrlButton.textContent = '¡Copiado!';
-            Future.delayed(const Duration(seconds: 2), () {
-              copyUrlButton.innerHTML = originalButtonContent;
-            });
-          })
-          .catchError((e) {
-            copyUrlButton.textContent = 'Error';
-            print('Could not copy text: $e');
-            Future.delayed(const Duration(seconds: 2), () {
-              copyUrlButton.innerHTML = originalButtonContent;
-            });
-          });
+      window.navigator.clipboard.writeText(assertionUrl).toDart.then((_) {
+        copyUrlButton.textContent = '¡Copiado!';
+        Future.delayed(const Duration(seconds: 2), () {
+          copyUrlButton.innerHTML = originalButtonContent;
+        });
+      }).catchError((e) {
+        copyUrlButton.textContent = 'Error';
+        print('Could not copy text: $e');
+        Future.delayed(const Duration(seconds: 2), () {
+          copyUrlButton.innerHTML = originalButtonContent;
+        });
+      });
     };
 
     copyUrlButton.addEventListener('click', copyClickListener.toJS);
@@ -351,22 +345,18 @@ void _showThankYouScreen(
   final originalButtonContent = thankYouCopyUrlButton.innerHTML;
 
   final void Function(Event) copyClickListener = (Event event) {
-    window.navigator.clipboard
-        .writeText(certificateUrl)
-        .toDart
-        .then((_) {
-          thankYouCopyUrlButton.textContent = '¡Copiado!';
-          Future.delayed(const Duration(seconds: 2), () {
-            thankYouCopyUrlButton.innerHTML = originalButtonContent;
-          });
-        })
-        .catchError((e) {
-          thankYouCopyUrlButton.textContent = 'Error';
-          print('Could not copy text: $e');
-          Future.delayed(const Duration(seconds: 2), () {
-            thankYouCopyUrlButton.innerHTML = originalButtonContent;
-          });
-        });
+    window.navigator.clipboard.writeText(certificateUrl).toDart.then((_) {
+      thankYouCopyUrlButton.textContent = '¡Copiado!';
+      Future.delayed(const Duration(seconds: 2), () {
+        thankYouCopyUrlButton.innerHTML = originalButtonContent;
+      });
+    }).catchError((e) {
+      thankYouCopyUrlButton.textContent = 'Error';
+      print('Could not copy text: $e');
+      Future.delayed(const Duration(seconds: 2), () {
+        thankYouCopyUrlButton.innerHTML = originalButtonContent;
+      });
+    });
   };
   thankYouCopyUrlButton.addEventListener('click', copyClickListener.toJS);
 
