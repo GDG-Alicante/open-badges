@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Redirigiendo...</title>
+    <script>
+        // This will be a placeholder replaced by the backend
+        const assertionUrl = "https://gdg-alicante.github.io/open-badges/badges/DevFest_2025/9449d57b-1f8d-4414-ad5a-58b53524f9fc.json";
+
+        window.onload = function() {
+            const url = new URL(window.location.href);
+            
+            // Dynamically find the base path (e.g., /open-badges)
+            const basePath = url.pathname.substring(0, url.pathname.indexOf('/badges/'));
+
+            // Construct the new URL with the assertion parameter
+            const newUrl = `${url.origin}${basePath}/?assertion=${encodeURIComponent(assertionUrl)}`;
+            
+            window.location.href = newUrl;
+        };
+    </script>
+</head>
+<body>
+    <p>Redirigiendo...</p>
+</body>
+</html>
